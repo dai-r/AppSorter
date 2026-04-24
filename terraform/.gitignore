@@ -10,5 +10,9 @@ crash.*.log
 *.tfvars.json
 !*.tfvars.example
 
+# backend.hcl はアカウントID入りのバケット名を含むので Git に入れない（example は OK）
+backend.hcl
+!backend.hcl.example
+
 # アーカイブビルド中間生成物
 build/

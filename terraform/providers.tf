@@ -12,8 +12,9 @@ terraform {
     }
   }
 
+  # Partial backend config. bucket は backend.hcl で渡す（アカウントIDを含むためコードに残さない）。
+  # `terraform init -backend-config=backend.hcl`
   backend "s3" {
-    bucket       = "REMOVED-BUCKET"
     key          = "appsorter/terraform.tfstate"
     region       = "ap-northeast-1"
     encrypt      = true

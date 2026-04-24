@@ -49,21 +49,27 @@ EventBridge (月初 UTC 00:00)
 
 ```bash
 cd AppSorter/terraform
+
+# 1. backend.hcl: tfstate保存先S3バケット名（アカウントIDを含むためコードに残さない）
+cp backend.hcl.example backend.hcl
+# backend.hcl を編集して bucket を実値に置き換える
+
+# 2. terraform.tfvars: notification_email 等の個人/環境固有値
 cp terraform.tfvars.example terraform.tfvars
 # terraform.tfvars を編集して notification_email を実値に置き換える
-# （variables.tf のデフォルトは公開リポジトリ向けプレースホルダ）
 ```
 
-`terraform.tfvars` は `.gitignore` で除外されており、個人メールが Git に入らない設計。
-他に上書きが必要な値（バケット名・予算上限・モデル切替等）があればここに書く。
+両ファイルとも `.gitignore` で除外されており、個人/アカウント情報が Git に入らない設計。
 
 ### apply
 
 ```bash
-terraform init      # 初回のみ。S3バックエンドに接続
-terraform plan      # 何が変わるかドライラン
-terraform apply     # 実際にデプロイ（料金発生）
+terraform init -backend-config=backend.hcl   # 初回のみ。partial backend に bucket 名を流し込む
+terraform plan                               # 何が変わるかドライラン
+terraform apply                              # 実際にデプロイ（料金発生）
 ```
+
+backend 設定を変えた時は `-reconfigure` か `-migrate-state` を `init` に付けて再実行。
 
 出力される `api_invoke_url` と `cognito_identity_pool_id`, `aws_region` を AppSorter 側のビルド設定（`local.properties` 経由 → `BuildConfig`）に渡す。
 
