@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppSorter レイアウト案 比較（カテゴリタイル + 並べ替え追加）</title>
+<style>
+  :root {
+    --primary: #1C6E5B;
+    --on-primary: #FFFFFF;
+    --primary-container: #B7F1DE;
+    --on-primary-container: #002019;
+    --surface: #F7FBF8;
+    --surface-container: #E4EFEA;
+    --surface-container-low: #EEF5F1;
+    --on-surface: #17201D;
+    --on-surface-variant: #52605B;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 24px;
+    background: linear-gradient(180deg, #e8e8e8 0%, #d0d0d0 100%);
+    color: var(--on-surface);
+    min-height: 100vh;
+  }
+  h1 { margin: 0 0 4px 0; font-size: 22px; }
+  .subtitle { color: #666; margin: 0 0 28px 0; font-size: 13px; }
+  .mockups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 28px;
+    max-width: 1600px;
+  }
+  .mockup {
+    background: var(--surface);
+    border-radius: 28px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    overflow: hidden;
+    max-width: 380px;
+    justify-self: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .label {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 14px;
+    background: var(--primary);
+    color: var(--on-primary);
+    text-align: center;
+    letter-spacing: 0.3px;
+  }
+  .toolbar {
+    padding: 14px 16px;
+    font-size: 17px;
+    font-weight: 700;
+    background: var(--surface-container);
+    color: var(--on-surface);
+  }
+  .scan-card {
+    margin: 10px 16px;
+    padding: 12px 14px;
+    background: var(--surface-container);
+    border-radius: 20px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    padding: 4px 10px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .btn {
+    background: var(--primary);
+    color: var(--on-primary);
+    text-align: center;
+    padding: 10px;
+    border-radius: 22px;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.2px;
+  }
+  .status {
+    font-size: 11px;
+    color: var(--on-surface-variant);
+    margin-top: 8px;
+  }
+  .tabs {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    padding: 6px 12px 0 12px;
+    background: var(--surface);
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 10px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+    color: var(--on-surface-variant);
+    border-bottom: 2px solid transparent;
+  }
+  .tab.active {
+    color: var(--primary);
+    font-weight: bold;
+    border-bottom: 2px solid var(--primary);
+  }
+  .body {
+    padding: 14px;
+    background: var(--surface);
+    flex: 1;
+    min-height: 420px;
+  }
+
+  /* Icons */
+  .icon {
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .ic-line { background: #06C755; }
+  .ic-x { background: #000; }
+  .ic-insta { background: linear-gradient(135deg, #f09433, #dc2743, #bc1888); }
+  .ic-youtube { background: #FF0000; }
+  .ic-netflix { background: #000; color: #E50914; }
+  .ic-spotify { background: #1DB954; }
+  .ic-camera { background: #5A6771; }
+  .ic-genshin { background: #f5c518; color: #1b1b1b; }
+  .ic-amazon { background: #FF9900; color: #000; }
+  .ic-rakuten { background: #BF0000; }
+  .ic-mercari { background: #e02020; }
+  .ic-paypay { background: #ea1f22; }
+  .ic-suica { background: #00A651; }
+  .ic-dpoint { background: #CC0033; }
+  .ic-gmail { background: #EA4335; }
+  .ic-settings { background: #78909C; }
+  .ic-transit { background: #FF6B35; }
+  .ic-maps { background: #0F9D58; }
+  .ic-banking { background: #0066CC; }
+  .ic-chrome { background: #4285F4; }
+
+  /* ---- A: Tile 4-col ---- */
+  .tile-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px 4px;
+  }
+  .tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .tile .icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    font-size: 18px;
+  }
+  .tile .name {
+    font-size: 10px;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--on-surface);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  /* ---- B: Dense Grid 5-col ---- */
+  .dense-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px 6px;
+  }
+  .dense-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .dense-tile .icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
+  .dense-tile .name {
+    font-size: 8px;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--on-surface-variant);
+    text-align: center;
+  }
+
+  /* ---- C: 2-col cards ---- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .card {
+    background: var(--surface-container-low);
+    padding: 12px;
+    border-radius: 16px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .card .icon {
+    width: 42px;
+    height: 42px;
+    font-size: 15px;
+    border-radius: 12px;
+  }
+  .card .meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    flex: 1;
+  }
+  .card .name {
+    font-size: 13px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--on-surface);
+  }
+  .card .cat {
+    font-size: 10px;
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    padding: 2px 8px;
+    border-radius: 8px;
+    align-self: flex-start;
+    font-weight: 600;
+  }
+
+  /* ---- D: Compact list ---- */
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .list-item {
+    background: var(--surface-container-low);
+    padding: 10px 12px;
+    border-radius: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .list-item .icon {
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 11px;
+  }
+  .list-item .text { flex: 1; min-width: 0; }
+  .list-item .name {
+    font-size: 14px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: var(--on-surface);
+  }
+  .list-item .pkg {
+    font-size: 10px;
+    color: var(--on-surface-variant);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .list-item .cat {
+    font-size: 10px;
+    background: var(--primary-container);
+    color: var(--on-primary-container);
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .notes {
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--on-surface-variant);
+    text-align: center;
+    background: #fafafa;
+    border-top: 1px solid rgba(0,0,0,0.05);
+  }
+  .count {
+    font-weight: 700;
+    color: var(--primary);
+  }
+
+  /* ---- E: Category Tile (drill-down) ---- */
+  .toolbar-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--surface-container);
+  }
+  .toolbar-flex .title {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .toolbar-flex .mode-toggle {
+    display: inline-flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--surface);
+    border-radius: 14px;
+  }
+  .toolbar-flex .mode-toggle button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .toolbar-flex .mode-toggle .active {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  .cat-tile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .cat-tile {
+    background: var(--surface-container);
+    border-radius: 22px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 130px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .cat-tile .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .cat-tile .name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--on-surface);
+  }
+  .cat-tile .count {
+    background: var(--primary);
+    color: var(--on-primary);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin: 0;
+  }
+  .mini-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-top: auto;
+  }
+  .mini-grid .icon {
+    width: 100%;
+    aspect-ratio: 1;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+  .mini-grid .more {
+    background: var(--surface-container-low);
+    color: var(--on-surface-variant);
+    font-size: 12px;
+  }
+
+  /* ---- F: Drag reorder state ---- */
+  .cat-tile.dragging {
+    transform: scale(1.06) rotate(1deg);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+    z-index: 10;
+  }
+  .cat-tile.wiggle {
+    animation: wiggle 0.5s ease-in-out infinite alternate;
+  }
+  .cat-tile.dropzone {
+    background: rgba(28, 110, 91, 0.12);
+    border: 2px dashed var(--primary);
+    padding: 12px;
+  }
+  @keyframes wiggle {
+    from { transform: rotate(-0.8deg); }
+    to { transform: rotate(0.8deg); }
+  }
+  .reorder-banner {
+    background: var(--primary);
+    color: var(--on-primary);
+    font-size: 12px;
+    padding: 8px 14px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .drag-handle {
+    font-size: 14px;
+    color: var(--on-surface-variant);
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+<h1>AppSorter レイアウト案 比較</h1>
+<p class="subtitle">App Tile モード (A) + カテゴリタイルモード (E/F) の2モード併用。Toolbar の切替ボタンで行き来。カテゴリは長押しで並べ替え可能</p>
+
+<div class="mockups">
+
+  <!-- ===== A. Tile 4列 ===== -->
+  <div class="mockup">
+    <div class="label">A. App Tile モード（ランチャー風）🏆</div>
+    <div class="toolbar-flex">
+      <span class="title">AppSorter</span>
+      <span class="mode-toggle">
+        <button>🗂️</button>
+        <button class="active">📱</button>
+      </span>
+    </div>
+    <div class="scan-card">
+      <span class="badge">バックエンド: オフラインルール</span>
+      <div class="btn">スキャンして分類</div>
+      <div class="status">16 件のアプリを オフラインルールで分類しました。</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active">すべて 16</div>
+      <div class="tab">ゲーム 1</div>
+      <div class="tab">SNS 2</div>
+      <div class="tab">動画 2</div>
+      <div class="tab">音楽 1</div>
+      <div class="tab">コミュ 1</div>
+    </div>
+    <div class="body">
+      <div class="tile-grid">
+        <div class="tile"><div class="icon ic-line">L</div><div class="name">LINE</div></div>
+        <div class="tile"><div class="icon ic-x">𝕏</div><div class="name">X</div></div>
+        <div class="tile"><div class="icon ic-insta">I</div><div class="name">Instagram</div></div>
+        <div class="tile"><div class="icon ic-youtube">▶</div><div class="name">YouTube</div></div>
+        <div class="tile"><div class="icon ic-netflix">N</div><div class="name">Netflix</div></div>
+        <div class="tile"><div class="icon ic-spotify">♪</div><div class="name">Spotify</div></div>
+        <div class="tile"><div class="icon ic-camera">📷</div><div class="name">カメラ</div></div>
+        <div class="tile"><div class="icon ic-genshin">G</div><div class="name">原神</div></div>
+        <div class="tile"><div class="icon ic-amazon">a</div><div class="name">Amazon</div></div>
+        <div class="tile"><div class="icon ic-rakuten">楽</div><div class="name">楽天市場</div></div>
+        <div class="tile"><div class="icon ic-mercari">メ</div><div class="name">メルカリ</div></div>
+        <div class="tile"><div class="icon ic-paypay">P</div><div class="name">PayPay</div></div>
+        <div class="tile"><div class="icon ic-dpoint">d</div><div class="name">dポイント</div></div>
+        <div class="tile"><div class="icon ic-gmail">M</div><div class="name">Gmail</div></div>
+        <div class="tile"><div class="icon ic-transit">駅</div><div class="name">乗換案内</div></div>
+        <div class="tile"><div class="icon ic-settings">⚙</div><div class="name">設定</div></div>
+      </div>
+    </div>
+    <div class="notes"><span class="count">1画面16アプリ</span> · アイコン大きめ · 名前は1行ellipsize</div>
+  </div>
+
+  <!-- ===== B. Dense Grid 5列 ===== -->
+  <div class="mockup">
+    <div class="label">B. 高密度グリッド 5列</div>
+    <div class="toolbar">AppSorter</div>
+    <div class="scan-card">
+      <span class="badge">バックエンド: オフラインルール</span>
+      <div class="btn">スキャンして分類</div>
+      <div class="status">16 件のアプリを オフラインルールで分類しました。</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active">すべて 16</div>
+      <div class="tab">ゲーム 1</div>
+      <div class="tab">SNS 2</div>
+      <div class="tab">動画 2</div>
+      <div class="tab">音楽 1</div>
+      <div class="tab">コミュ 1</div>
+    </div>
+    <div class="body">
+      <div class="dense-grid">
+        <div class="dense-tile"><div class="icon ic-line">L</div><div class="name">LINE</div></div>
+        <div class="dense-tile"><div class="icon ic-x">𝕏</div><div class="name">X</div></div>
+        <div class="dense-tile"><div class="icon ic-insta">I</div><div class="name">Insta</div></div>
+        <div class="dense-tile"><div class="icon ic-youtube">▶</div><div class="name">YouTube</div></div>
+        <div class="dense-tile"><div class="icon ic-netflix">N</div><div class="name">Netflix</div></div>
+        <div class="dense-tile"><div class="icon ic-spotify">♪</div><div class="name">Spotify</div></div>
+        <div class="dense-tile"><div class="icon ic-camera">📷</div><div class="name">カメラ</div></div>
+        <div class="dense-tile"><div class="icon ic-genshin">G</div><div class="name">原神</div></div>
+        <div class="dense-tile"><div class="icon ic-amazon">a</div><div class="name">Amazon</div></div>
+        <div class="dense-tile"><div class="icon ic-rakuten">楽</div><div class="name">楽天</div></div>
+        <div class="dense-tile"><div class="icon ic-mercari">メ</div><div class="name">メルカリ</div></div>
+        <div class="dense-tile"><div class="icon ic-paypay">P</div><div class="name">PayPay</div></div>
+        <div class="dense-tile"><div class="icon ic-suica">ス</div><div class="name">Suica</div></div>
+        <div class="dense-tile"><div class="icon ic-dpoint">d</div><div class="name">dポイント</div></div>
+        <div class="dense-tile"><div class="icon ic-gmail">M</div><div class="name">Gmail</div></div>
+        <div class="dense-tile"><div class="icon ic-transit">駅</div><div class="name">乗換</div></div>
+        <div class="dense-tile"><div class="icon ic-maps">M</div><div class="name">Maps</div></div>
+        <div class="dense-tile"><div class="icon ic-banking">銀</div><div class="name">楽天銀行</div></div>
+        <div class="dense-tile"><div class="icon ic-chrome">C</div><div class="name">Chrome</div></div>
+        <div class="dense-tile"><div class="icon ic-settings">⚙</div><div class="name">設定</div></div>
+      </div>
+    </div>
+    <div class="notes"><span class="count">1画面20〜25アプリ</span> · アイコン小さめ · 名前は最小フォント</div>
+  </div>
+
+  <!-- ===== C. 2列カード ===== -->
+  <div class="mockup">
+    <div class="label">C. 2列カード（情報量バランス型）</div>
+    <div class="toolbar">AppSorter</div>
+    <div class="scan-card">
+      <span class="badge">バックエンド: オフラインルール</span>
+      <div class="btn">スキャンして分類</div>
+      <div class="status">16 件のアプリを オフラインルールで分類しました。</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active">すべて 16</div>
+      <div class="tab">ゲーム 1</div>
+      <div class="tab">SNS 2</div>
+      <div class="tab">動画 2</div>
+      <div class="tab">音楽 1</div>
+      <div class="tab">コミュ 1</div>
+    </div>
+    <div class="body">
+      <div class="card-grid">
+        <div class="card"><div class="icon ic-line">L</div><div class="meta"><div class="name">LINE</div><div class="cat">コミュ</div></div></div>
+        <div class="card"><div class="icon ic-x">𝕏</div><div class="meta"><div class="name">X</div><div class="cat">SNS</div></div></div>
+        <div class="card"><div class="icon ic-insta">I</div><div class="meta"><div class="name">Instagram</div><div class="cat">SNS</div></div></div>
+        <div class="card"><div class="icon ic-youtube">▶</div><div class="meta"><div class="name">YouTube</div><div class="cat">動画</div></div></div>
+        <div class="card"><div class="icon ic-spotify">♪</div><div class="meta"><div class="name">Spotify</div><div class="cat">音楽</div></div></div>
+        <div class="card"><div class="icon ic-genshin">G</div><div class="meta"><div class="name">原神</div><div class="cat">ゲーム</div></div></div>
+        <div class="card"><div class="icon ic-amazon">a</div><div class="meta"><div class="name">Amazon</div><div class="cat">ショップ</div></div></div>
+        <div class="card"><div class="icon ic-rakuten">楽</div><div class="meta"><div class="name">楽天市場</div><div class="cat">ショップ</div></div></div>
+        <div class="card"><div class="icon ic-paypay">P</div><div class="meta"><div class="name">PayPay</div><div class="cat">決済</div></div></div>
+        <div class="card"><div class="icon ic-dpoint">d</div><div class="meta"><div class="name">dポイント</div><div class="cat">ポイント</div></div></div>
+        <div class="card"><div class="icon ic-gmail">M</div><div class="meta"><div class="name">Gmail</div><div class="cat">メール</div></div></div>
+        <div class="card"><div class="icon ic-transit">駅</div><div class="meta"><div class="name">乗換案内</div><div class="cat">交通</div></div></div>
+      </div>
+    </div>
+    <div class="notes"><span class="count">1画面8〜10アプリ</span> · カテゴリバッジ併記 · 「すべて」タブで特に情報豊富</div>
+  </div>
+
+  <!-- ===== D. 縦リスト（現状） ===== -->
+  <div class="mockup">
+    <div class="label">D. 縦リスト（現在の実装）</div>
+    <div class="toolbar">AppSorter</div>
+    <div class="scan-card">
+      <span class="badge">バックエンド: オフラインルール</span>
+      <div class="btn">スキャンして分類</div>
+      <div class="status">16 件のアプリを オフラインルールで分類しました。</div>
+    </div>
+    <div class="tabs">
+      <div class="tab active">すべて 16</div>
+      <div class="tab">ゲーム 1</div>
+      <div class="tab">SNS 2</div>
+      <div class="tab">動画 2</div>
+      <div class="tab">音楽 1</div>
+      <div class="tab">コミュ 1</div>
+    </div>
+    <div class="body">
+      <div class="list">
+        <div class="list-item"><div class="icon ic-line">L</div><div class="text"><div class="name">LINE</div><div class="pkg">jp.naver.line.android</div></div><div class="cat">コミュ</div></div>
+        <div class="list-item"><div class="icon ic-x">𝕏</div><div class="text"><div class="name">X</div><div class="pkg">com.twitter.android</div></div><div class="cat">SNS</div></div>
+        <div class="list-item"><div class="icon ic-insta">I</div><div class="text"><div class="name">Instagram</div><div class="pkg">com.instagram.android</div></div><div class="cat">SNS</div></div>
+        <div class="list-item"><div class="icon ic-youtube">▶</div><div class="text"><div class="name">YouTube</div><div class="pkg">com.google.android.youtube</div></div><div class="cat">動画</div></div>
+        <div class="list-item"><div class="icon ic-spotify">♪</div><div class="text"><div class="name">Spotify</div><div class="pkg">com.spotify.music</div></div><div class="cat">音楽</div></div>
+        <div class="list-item"><div class="icon ic-genshin">G</div><div class="text"><div class="name">原神</div><div class="pkg">com.miHoYo.GenshinImpact</div></div><div class="cat">ゲーム</div></div>
+        <div class="list-item"><div class="icon ic-paypay">P</div><div class="text"><div class="name">PayPay</div><div class="pkg">jp.ne.paypay.android.app</div></div><div class="cat">決済</div></div>
+        <div class="list-item"><div class="icon ic-dpoint">d</div><div class="text"><div class="name">dポイント</div><div class="pkg">jp.co.nttdocomo.dpoint</div></div><div class="cat">ポイント</div></div>
+      </div>
+    </div>
+    <div class="notes"><span class="count">1画面6〜8アプリ</span> · パッケージ名可視 · 情報量最大</div>
+  </div>
+
+  <!-- ===== E. Category Tile (drill-down) ===== -->
+  <div class="mockup">
+    <div class="label">E. Category Tile モード 🆕（カテゴリ一覧）</div>
+    <div class="toolbar-flex">
+      <span class="title">AppSorter</span>
+      <span class="mode-toggle">
+        <button class="active">🗂️</button>
+        <button>📱</button>
+      </span>
+    </div>
+    <div class="scan-card">
+      <span class="badge">バックエンド: オフラインルール</span>
+      <div class="btn">スキャンして分類</div>
+      <div class="status">16 件のアプリを 10 カテゴリに分類しました。</div>
+    </div>
+    <div class="body">
+      <div class="cat-tile-grid">
+        <div class="cat-tile">
+          <div class="header"><span class="name">ゲーム</span><span class="count">3</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-genshin">G</div>
+            <div class="icon ic-line" style="background:#4a90e2">F</div>
+            <div class="icon ic-amazon" style="background:#8e44ad">P</div>
+            <div class="icon more">+0</div>
+          </div>
+        </div>
+        <div class="cat-tile">
+          <div class="header"><span class="name">SNS</span><span class="count">2</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-x">𝕏</div>
+            <div class="icon ic-insta">I</div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+        <div class="cat-tile">
+          <div class="header"><span class="name">動画</span><span class="count">2</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-youtube">▶</div>
+            <div class="icon ic-netflix">N</div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+        <div class="cat-tile">
+          <div class="header"><span class="name">ショッピング</span><span class="count">3</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-amazon">a</div>
+            <div class="icon ic-rakuten">楽</div>
+            <div class="icon ic-mercari">メ</div>
+            <div class="icon more">+0</div>
+          </div>
+        </div>
+        <div class="cat-tile">
+          <div class="header"><span class="name">決済</span><span class="count">2</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-paypay">P</div>
+            <div class="icon ic-suica">ス</div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+        <div class="cat-tile">
+          <div class="header"><span class="name">コミュ</span><span class="count">1</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-line">L</div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">タップでカテゴリの中に入る・長押しで並べ替えモード</div>
+  </div>
+
+  <!-- ===== F. Drag reorder state ===== -->
+  <div class="mockup">
+    <div class="label">F. 並べ替えモード（長押し後）🆕</div>
+    <div class="toolbar-flex">
+      <span class="title">AppSorter</span>
+      <span class="mode-toggle">
+        <button class="active">🗂️</button>
+        <button>📱</button>
+      </span>
+    </div>
+    <div class="reorder-banner">✋ 並べ替え中 · 離して完了</div>
+    <div class="body">
+      <div class="cat-tile-grid">
+        <div class="cat-tile wiggle">
+          <div class="header"><span class="name">ゲーム</span><span class="drag-handle">⋮⋮</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-genshin">G</div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+        <div class="cat-tile wiggle">
+          <div class="header"><span class="name">SNS</span><span class="drag-handle">⋮⋮</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-x">𝕏</div>
+            <div class="icon ic-insta">I</div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+        <div class="cat-tile dragging">
+          <div class="header"><span class="name">ショッピング</span><span class="count">3</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-amazon">a</div>
+            <div class="icon ic-rakuten">楽</div>
+            <div class="icon ic-mercari">メ</div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+        <div class="cat-tile dropzone"></div>
+        <div class="cat-tile wiggle">
+          <div class="header"><span class="name">動画</span><span class="drag-handle">⋮⋮</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-youtube">▶</div>
+            <div class="icon ic-netflix">N</div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+        <div class="cat-tile wiggle">
+          <div class="header"><span class="name">決済</span><span class="drag-handle">⋮⋮</span></div>
+          <div class="mini-grid">
+            <div class="icon ic-paypay">P</div>
+            <div class="icon ic-suica">ス</div>
+            <div class="icon more"></div>
+            <div class="icon more"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="notes">ドラッグ中タイルが拡大 + 影 · 移動先に破線 dropzone · 他タイルは微wiggle</div>
+  </div>
+
+</div>
+</body>
+</html>

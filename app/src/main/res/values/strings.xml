@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AppSorter</string>
+    <string name="scan_title">Installed app categorizer</string>
+    <string name="scan_description">Scans launchable apps, groups them in batches of 50, categorizes them, and saves the result locally.</string>
+    <string name="backend_label">Backend: %1$s</string>
+    <string name="backend_offline_rules">Offline rules (local)</string>
+    <string name="backend_bedrock">Bedrock (cloud)</string>
+    <string name="backend_local_llm">Local LLM</string>
+    <string name="action_scan">Scan and categorize</string>
+    <string name="status_idle">No scan yet. Results will be cached locally.</string>
+    <string name="status_loaded">%1$d saved apps loaded from local cache.</string>
+    <string name="status_scanning">Scanning installed apps...</string>
+    <string name="status_no_apps">No launchable apps found.</string>
+    <string name="status_batch_progress">Processing batch %1$d, %3$d / %2$d apps done.</string>
+    <string name="status_done">%1$d apps categorized with %2$s.</string>
+    <string name="summary_title">Category summary</string>
+    <string name="apps_title">Categorized apps</string>
+    <string name="apps_all_title">All apps</string>
+    <string name="apps_filtered_title">%1$s apps</string>
+    <string name="no_results">Nothing stored yet. Run a scan to build the local catalog.</string>
+    <string name="toast_cannot_launch">Can\'t launch this app</string>
+    <string name="action_change_category">Change category</string>
+    <string name="action_open_details">Open app info</string>
+    <string name="tab_label">%1$s %2$d</string>
+
+    <string name="category_all">All</string>
+    <string name="category_Communication">Communication</string>
+    <string name="category_SNS">SNS</string>
+    <string name="category_Mail">Mail</string>
+    <string name="category_Video">Video</string>
+    <string name="category_Music">Music</string>
+    <string name="category_Photo">Photo</string>
+    <string name="category_Game">Game</string>
+    <string name="category_Shopping">Shopping</string>
+    <string name="category_Payment">Payment</string>
+    <string name="category_Points">Points</string>
+    <string name="category_Banking">Banking</string>
+    <string name="category_Crypto">Crypto</string>
+    <string name="category_Work">Work</string>
+    <string name="category_News">News &amp; Weather</string>
+    <string name="category_Navigation">Navigation</string>
+    <string name="category_Travel">Travel</string>
+    <string name="category_Mobility">Mobility</string>
+    <string name="category_Food">Food</string>
+    <string name="category_Health">Health</string>
+    <string name="category_Education">Education</string>
+    <string name="category_Utility">Utility</string>
+    <string name="category_System">System</string>
+    <string name="category_Other">Other</string>
+</resources>

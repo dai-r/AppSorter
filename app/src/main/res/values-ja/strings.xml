@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AppSorter</string>
+    <string name="scan_title">インストール済みアプリの分類</string>
+    <string name="scan_description">ランチャーに表示されるアプリを50件ずつスキャンし、カテゴリに分けてローカルに保存します。</string>
+    <string name="backend_label">バックエンド: %1$s</string>
+    <string name="backend_offline_rules">オフラインルール（ローカル）</string>
+    <string name="backend_bedrock">Bedrock（クラウド）</string>
+    <string name="backend_local_llm">ローカルLLM</string>
+    <string name="action_scan">スキャンして分類</string>
+    <string name="status_idle">まだスキャンしていません。結果はローカルに保存されます。</string>
+    <string name="status_loaded">%1$d 件のアプリをローカルキャッシュから読み込みました。</string>
+    <string name="status_scanning">インストール済みアプリをスキャン中…</string>
+    <string name="status_no_apps">ランチャーに表示されるアプリが見つかりませんでした。</string>
+    <string name="status_batch_progress">バッチ %1$d を処理中、%3$d / %2$d 件完了。</string>
+    <string name="status_done">%1$d 件のアプリを %2$s で分類しました。</string>
+    <string name="summary_title">カテゴリ別サマリー</string>
+    <string name="apps_title">分類済みアプリ</string>
+    <string name="apps_all_title">すべてのアプリ</string>
+    <string name="apps_filtered_title">「%1$s」のアプリ</string>
+    <string name="no_results">まだ保存されたデータがありません。スキャンするとローカルのカタログが作られます。</string>
+    <string name="toast_cannot_launch">このアプリは起動できません</string>
+    <string name="action_change_category">カテゴリを変更</string>
+    <string name="action_open_details">アプリ情報を開く</string>
+    <string name="tab_label">%1$s %2$d</string>
+
+    <string name="category_all">すべて</string>
+    <string name="category_Communication">コミュニケーション</string>
+    <string name="category_SNS">SNS</string>
+    <string name="category_Mail">メール</string>
+    <string name="category_Video">動画</string>
+    <string name="category_Music">音楽・ラジオ</string>
+    <string name="category_Photo">写真・カメラ</string>
+    <string name="category_Game">ゲーム</string>
+    <string name="category_Shopping">ショッピング</string>
+    <string name="category_Payment">決済・ウォレット</string>
+    <string name="category_Points">ポイント・クーポン</string>
+    <string name="category_Banking">銀行・投資</string>
+    <string name="category_Crypto">暗号資産</string>
+    <string name="category_Work">仕事・生産性</string>
+    <string name="category_News">ニュース・天気</string>
+    <string name="category_Navigation">地図・交通</string>
+    <string name="category_Travel">旅行・宿泊</string>
+    <string name="category_Mobility">車・モビリティ</string>
+    <string name="category_Food">グルメ・料理</string>
+    <string name="category_Health">健康・医療</string>
+    <string name="category_Education">学習・本</string>
+    <string name="category_Utility">ユーティリティ</string>
+    <string name="category_System">システム・設定</string>
+    <string name="category_Other">その他</string>
+</resources>

@@ -1,0 +1,14 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+crash.log
+crash.*.log
+
+# tfvars は個人環境の値を含むので Git に入れない（example は OK）
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+
+# アーカイブビルド中間生成物
+build/
