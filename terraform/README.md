@@ -36,30 +36,49 @@ EventBridge (月初 UTC 00:00)
 ## 前提
 
 1. Bedrock のモデルアクセスを AWS コンソール「Bedrock > Model access」で **ap-northeast-1 (東京)** で有効化しておく。
-   - デフォルトは最新の **Claude Haiku 4.5** (`anthropic.claude-haiku-4-5-20251001-v1:0`)。
-   - 東京で直接提供されていない場合は `ValidationException` になるので、クロスリージョン推論プロファイル (`apac.anthropic.claude-haiku-4-5-20251001-v1:0`) に差し替える。
-   - レガシー用途で Haiku 3.5 や Haiku 3 にダウングレードしたい場合も `bedrock_model_id` 変数で切り替え可能。
+   - デフォルトは **Claude Haiku 4.5** を **JP内クロスリージョン推論プロファイル** 経由で使用：`jp.anthropic.claude-haiku-4-5-20251001-v1:0`（ap-northeast-1, ap-northeast-3 にルーティング）。
+   - 東京 on-demand では `ValidationException: Invocation ... with on-demand throughput isn't supported` で失敗するので、必ずプロファイル経由で叩く必要がある。
+   - グローバル版は `global.anthropic.claude-haiku-4-5-20251001-v1:0`（US/EU等にもルーティング）。レイテンシより可用性を優先したい場合に。
+   - Haiku 3.5/Haiku 3 等の旧モデルは on-demand 直接指定可。`bedrock_model_id` 変数で切替。
 2. `aws configure` 済みでデプロイ用 IAM が `iam:*`, `apigateway:*`, `lambda:*`, `logs:*`, `cognito-identity:*`, `bedrock:*`, `dynamodb:*` を持っている。
-3. Terraform 1.6+ と Python 3.12 がローカルにある。
+3. Terraform **1.10+**（S3 ネイティブロックを使うため）と Python 3.12 がローカルにある。
 
 ## デプロイ
 
+### 初回セットアップ（必須）
+
 ```bash
 cd AppSorter/terraform
-cp terraform.tfvars.example terraform.tfvars   # 必要なら編集
-terraform init
-terraform plan
-terraform apply
+cp terraform.tfvars.example terraform.tfvars
+# terraform.tfvars を編集して notification_email を実値に置き換える
+# （variables.tf のデフォルトは公開リポジトリ向けプレースホルダ）
 ```
 
-出力される `api_invoke_url` と `cognito_identity_pool_id`, `aws_region` を AppSorter 側のビルド設定（`BuildConfig` または `local.properties` 経由）に渡す。
+`terraform.tfvars` は `.gitignore` で除外されており、個人メールが Git に入らない設計。
+他に上書きが必要な値（バケット名・予算上限・モデル切替等）があればここに書く。
+
+### apply
+
+```bash
+terraform init      # 初回のみ。S3バックエンドに接続
+terraform plan      # 何が変わるかドライラン
+terraform apply     # 実際にデプロイ（料金発生）
+```
+
+出力される `api_invoke_url` と `cognito_identity_pool_id`, `aws_region` を AppSorter 側のビルド設定（`local.properties` 経由 → `BuildConfig`）に渡す。
 
 ## Android 側の繋ぎ方（実装メモ）
 
-1. `implementation("aws.sdk.kotlin:cognitoidentity:<ver>")` と `aws.sdk.kotlin:bedrock-runtime` ではなく HTTP クライアント + `aws.smithy.kotlin:aws-signing-default` を使う。
-2. 起動時に `CognitoIdentityClient.getId` → `getCredentialsForIdentity` で短期資格情報を取得しキャッシュ。
-3. `/categorize` への POST を AWS SigV4 で署名して送信。リクエスト body は `{"apps":[{"appName":"...","packageName":"..."}, ...]}`。
-4. 201/200 のレスポンスボディを `CategorizedApp` 相当の JSON として `CategorizationEngine` に流す。既存の `RuleBasedAppCategorizer` を `BedrockAppCategorizer` と差し替える想定。
+実装済み内容（`AppSorter/app/src/main/java/dev/dair/appsorter/categorizer/` 配下）：
+
+1. **依存関係**：`aws.sdk.kotlin:cognitoidentity`（資格情報取得のみ）、`okhttp`、`kotlinx-serialization-json`。署名は自前。
+2. **資格情報**：`CognitoIdentityClient.getId` → `getCredentialsForIdentity` で短期 AWS 資格情報を取得、メモリにキャッシュ（1時間 TTL）。
+3. **署名**：`SigV4Signer.kt`（自前 HMAC-SHA256 実装、~120行）で SigV4 署名。
+   - smithy-kotlin の `aws-signing-default` + OkHttp の組み合わせは Host/Content-Length 周りで署名不一致（403）が出るため非採用。
+   - 署名対象ヘッダは `content-type`, `host`, `x-amz-date`, `x-amz-content-sha256`, `x-amz-security-token` の最小構成。
+4. **送信**：OkHttp で POST。`local.properties` の `APPSORTER_API_URL` / `APPSORTER_COGNITO_IDENTITY_POOL_ID` / `APPSORTER_AWS_REGION` を `BuildConfig` 経由で参照。
+5. **レスポンス処理**：200 → JSON パース、429 → `RateLimitException`、503 → `KillSwitchException`。`MainActivity` 側で例外時は `RuleBasedAppCategorizer`（オフライン）にフォールバックして UI を止めない。
+6. **JSON パース**：Lambda 側で fence 剥がし関数（`_extract_json`）を通している。Haiku 系は temperature=0 でも ` ```json ``` ` フェンスを付けてくることがあるため。
 
 ## 破棄
 
