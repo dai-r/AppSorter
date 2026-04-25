@@ -28,6 +28,7 @@ import dev.dair.appsorter.data.AppSorterDatabase
 import dev.dair.appsorter.databinding.ActivityMainBinding
 import dev.dair.appsorter.model.CategorizedApp
 import dev.dair.appsorter.model.InstalledApp
+import dev.dair.appsorter.widget.CategoryWidgetProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -44,6 +45,9 @@ class MainActivity : AppCompatActivity() {
 
     private var allApps: List<CategorizedApp> = emptyList()
     private var mode: ViewMode = ViewMode.CATEGORY
+
+    /** ウィジェットタップで起動された場合のドリルダウン対象。データロード完了後に適用。 */
+    private var pendingWidgetCategory: String? = null
 
     /**
      * カテゴリからドリルダウン中かどうか。ドリルダウン中は back で元の CATEGORY に戻る。
@@ -95,7 +99,20 @@ class MainActivity : AppCompatActivity() {
         mode = ViewModePrefs.load(this)
         applyMode()
 
+        pendingWidgetCategory = intent.getStringExtra(CategoryWidgetProvider.EXTRA_CATEGORY)
+
         lifecycleScope.launch { loadSavedData() }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val category = intent.getStringExtra(CategoryWidgetProvider.EXTRA_CATEGORY) ?: return
+        // すでにデータあればそのまま遷移、なければ pending に積んで loadSavedData 完了後に遷移
+        if (allApps.isNotEmpty()) {
+            drillDownToCategory(category)
+        } else {
+            pendingWidgetCategory = category
+        }
     }
 
     private fun setupAppTiles() {
@@ -193,6 +210,7 @@ class MainActivity : AppCompatActivity() {
                         } else it
                     }
                     renderApps(updated)
+                    CategoryWidgetProvider.updateAll(this@MainActivity)
                 }
             },
             onOpenDetails = {
@@ -229,6 +247,11 @@ class MainActivity : AppCompatActivity() {
                 R.string.status_loaded,
                 apps.size
             )
+        // ウィジェット経由で起動された場合はここでドリルダウン
+        pendingWidgetCategory?.let {
+            pendingWidgetCategory = null
+            drillDownToCategory(it)
+        }
     }
 
     private fun scanAndCategorize() {
@@ -268,6 +291,7 @@ class MainActivity : AppCompatActivity() {
                     categorized.size,
                     backendDisplay()
                 )
+                CategoryWidgetProvider.updateAll(this@MainActivity)
             } finally {
                 binding.btnScan.isEnabled = true
                 binding.progressScan.visibility = View.GONE

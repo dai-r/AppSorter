@@ -22,6 +22,9 @@
     <string name="toast_cannot_launch">このアプリは起動できません</string>
     <string name="action_change_category">カテゴリを変更</string>
     <string name="action_open_details">アプリ情報を開く</string>
+    <string name="widget_label">AppSorter カテゴリ</string>
+    <string name="widget_description">指定したカテゴリに直接ジャンプ</string>
+    <string name="widget_pick_category">カテゴリを選択</string>
     <string name="tab_label">%1$s %2$d</string>
 
     <string name="category_all">すべて</string>

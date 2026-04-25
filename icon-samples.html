@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AppSorter アイコン案 4種</title>
+<style>
+  body {
+    font-family: "Hiragino Sans", "Noto Sans JP", -apple-system, BlinkMacSystemFont, sans-serif;
+    margin: 0;
+    padding: 28px;
+    background: linear-gradient(180deg, #e8e8e8 0%, #cfcfcf 100%);
+    color: #17201D;
+  }
+  h1 { margin: 0 0 4px 0; font-size: 22px; }
+  p.intro { margin: 0 0 28px 0; color: #555; font-size: 13px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 24px;
+    max-width: 1600px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .card h2 {
+    margin: 0 0 4px 0;
+    font-size: 17px;
+  }
+  .card .desc {
+    font-size: 12px;
+    color: #666;
+    margin: 0 0 16px 0;
+  }
+
+  .sizes {
+    display: flex;
+    gap: 24px;
+    align-items: flex-end;
+    padding: 20px;
+    background: #f0f0f0;
+    border-radius: 14px;
+  }
+  .size-block {
+    text-align: center;
+  }
+  .size-block svg {
+    display: block;
+    margin: 0 auto;
+  }
+  .size-label {
+    font-size: 10px;
+    color: #666;
+    margin-top: 6px;
+  }
+
+  .mock-phone {
+    margin-top: 14px;
+    padding: 16px;
+    background: linear-gradient(135deg, #6f8fa8 0%, #4d6b87 100%);
+    border-radius: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px 10px;
+  }
+  .home-app {
+    text-align: center;
+    color: white;
+  }
+  .home-app svg {
+    display: block;
+    margin: 0 auto;
+  }
+  .home-app .name {
+    font-size: 10px;
+    margin-top: 4px;
+  }
+  .home-app.placeholder svg {
+    border-radius: 22%;
+  }
+
+  /* Rounded mask for launcher-style preview */
+  .squircle {
+    border-radius: 22%;
+    overflow: hidden;
+  }
+</style>
+</head>
+<body>
+
+<h1>AppSorter アイコン案 4種</h1>
+<p class="intro">実サイズ (144dp相当) / 中 (72dp) / 小 (32dp/通知バー想定) でプレビュー。最下段はホーム画面に並んだ時のイメージ。</p>
+
+<div class="grid">
+
+  <!-- ============ A. 3x3 カラータイル ============ -->
+  <div class="card">
+    <h2>A. 3×3 カラータイル 🏆</h2>
+    <p class="desc">primary色背景 + 9色タイル。一目で「分類アプリ」と分かる王道デザイン。</p>
+    <div class="sizes">
+      <div class="size-block">
+        <svg width="144" height="144" viewBox="0 0 108 108">
+          <defs>
+            <clipPath id="squircle-a"><rect width="108" height="108" rx="24"/></clipPath>
+          </defs>
+          <g clip-path="url(#squircle-a)">
+            <rect width="108" height="108" fill="#1C6E5B"/>
+            <g transform="translate(26, 26)">
+              <rect x="0"  y="0"  width="16" height="16" rx="3" fill="#FF6B6B"/>
+              <rect x="20" y="0"  width="16" height="16" rx="3" fill="#FFD93D"/>
+              <rect x="40" y="0"  width="16" height="16" rx="3" fill="#6BCB77"/>
+              <rect x="0"  y="20" width="16" height="16" rx="3" fill="#4D96FF"/>
+              <rect x="20" y="20" width="16" height="16" rx="3" fill="#FFFFFF"/>
+              <rect x="40" y="20" width="16" height="16" rx="3" fill="#FF9F40"/>
+              <rect x="0"  y="40" width="16" height="16" rx="3" fill="#FF7AA2"/>
+              <rect x="20" y="40" width="16" height="16" rx="3" fill="#14C6D1"/>
+              <rect x="40" y="40" width="16" height="16" rx="3" fill="#8B7355"/>
+            </g>
+          </g>
+        </svg>
+        <div class="size-label">144dp</div>
+      </div>
+      <div class="size-block">
+        <svg width="72" height="72" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-a)">
+            <rect width="108" height="108" fill="#1C6E5B"/>
+            <g transform="translate(26, 26)">
+              <rect x="0"  y="0"  width="16" height="16" rx="3" fill="#FF6B6B"/>
+              <rect x="20" y="0"  width="16" height="16" rx="3" fill="#FFD93D"/>
+              <rect x="40" y="0"  width="16" height="16" rx="3" fill="#6BCB77"/>
+              <rect x="0"  y="20" width="16" height="16" rx="3" fill="#4D96FF"/>
+              <rect x="20" y="20" width="16" height="16" rx="3" fill="#FFFFFF"/>
+              <rect x="40" y="20" width="16" height="16" rx="3" fill="#FF9F40"/>
+              <rect x="0"  y="40" width="16" height="16" rx="3" fill="#FF7AA2"/>
+              <rect x="20" y="40" width="16" height="16" rx="3" fill="#14C6D1"/>
+              <rect x="40" y="40" width="16" height="16" rx="3" fill="#8B7355"/>
+            </g>
+          </g>
+        </svg>
+        <div class="size-label">72dp</div>
+      </div>
+      <div class="size-block">
+        <svg width="32" height="32" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-a)">
+            <rect width="108" height="108" fill="#1C6E5B"/>
+            <g transform="translate(26, 26)">
+              <rect x="0"  y="0"  width="16" height="16" rx="3" fill="#FF6B6B"/>
+              <rect x="20" y="0"  width="16" height="16" rx="3" fill="#FFD93D"/>
+              <rect x="40" y="0"  width="16" height="16" rx="3" fill="#6BCB77"/>
+              <rect x="0"  y="20" width="16" height="16" rx="3" fill="#4D96FF"/>
+              <rect x="20" y="20" width="16" height="16" rx="3" fill="#FFFFFF"/>
+              <rect x="40" y="20" width="16" height="16" rx="3" fill="#FF9F40"/>
+              <rect x="0"  y="40" width="16" height="16" rx="3" fill="#FF7AA2"/>
+              <rect x="20" y="40" width="16" height="16" rx="3" fill="#14C6D1"/>
+              <rect x="40" y="40" width="16" height="16" rx="3" fill="#8B7355"/>
+            </g>
+          </g>
+        </svg>
+        <div class="size-label">32dp</div>
+      </div>
+    </div>
+    <div class="mock-phone">
+      <div class="home-app">
+        <svg width="48" height="48" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-a)">
+            <rect width="108" height="108" fill="#1C6E5B"/>
+            <g transform="translate(26, 26)">
+              <rect x="0"  y="0"  width="16" height="16" rx="3" fill="#FF6B6B"/>
+              <rect x="20" y="0"  width="16" height="16" rx="3" fill="#FFD93D"/>
+              <rect x="40" y="0"  width="16" height="16" rx="3" fill="#6BCB77"/>
+              <rect x="0"  y="20" width="16" height="16" rx="3" fill="#4D96FF"/>
+              <rect x="20" y="20" width="16" height="16" rx="3" fill="#FFFFFF"/>
+              <rect x="40" y="20" width="16" height="16" rx="3" fill="#FF9F40"/>
+              <rect x="0"  y="40" width="16" height="16" rx="3" fill="#FF7AA2"/>
+              <rect x="20" y="40" width="16" height="16" rx="3" fill="#14C6D1"/>
+              <rect x="40" y="40" width="16" height="16" rx="3" fill="#8B7355"/>
+            </g>
+          </g>
+        </svg>
+        <div class="name">AppSorter</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#4285F4"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white" font-weight="bold">G</text></svg>
+        <div class="name">Gmail</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#06C755"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white" font-weight="bold">L</text></svg>
+        <div class="name">LINE</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FF0000"/><polygon points="38,30 72,50 38,70" fill="white"/></svg>
+        <div class="name">YouTube</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ B. Bento ============ -->
+  <div class="card">
+    <h2>B. Bento ボックス 🍱</h2>
+    <p class="desc">和の意匠で個性を出す。「分類して格納」のメタファを直接表現。</p>
+    <div class="sizes">
+      <div class="size-block">
+        <svg width="144" height="144" viewBox="0 0 108 108">
+          <defs>
+            <clipPath id="squircle-b"><rect width="108" height="108" rx="24"/></clipPath>
+          </defs>
+          <g clip-path="url(#squircle-b)">
+            <rect width="108" height="108" fill="#F5EFE0"/>
+            <g transform="translate(22, 26)">
+              <rect x="0" y="0" width="64" height="56" rx="5" fill="#FEFCF5" stroke="#3D3A2F" stroke-width="2.5"/>
+              <line x1="0" y1="28" x2="64" y2="28" stroke="#3D3A2F" stroke-width="2"/>
+              <line x1="32" y1="0" x2="32" y2="56" stroke="#3D3A2F" stroke-width="2"/>
+              <!-- 左上: おにぎり -->
+              <circle cx="16" cy="14" r="9" fill="#FFFFFF" stroke="#D4CEBF" stroke-width="0.5"/>
+              <circle cx="16" cy="14" r="3" fill="#D94444"/>
+              <!-- 右上: 玉子焼き -->
+              <rect x="38" y="6" width="20" height="16" rx="3" fill="#F4C95D"/>
+              <line x1="44" y1="6" x2="44" y2="22" stroke="#E5AF3D" stroke-width="1"/>
+              <line x1="50" y1="6" x2="50" y2="22" stroke="#E5AF3D" stroke-width="1"/>
+              <!-- 左下: ブロッコリー -->
+              <circle cx="10" cy="40" r="5" fill="#6BA368"/>
+              <circle cx="19" cy="44" r="4" fill="#5A8D5A"/>
+              <circle cx="25" cy="38" r="3" fill="#88B273"/>
+              <!-- 右下: から揚げ -->
+              <rect x="38" y="34" width="20" height="14" rx="3" fill="#A0633A"/>
+              <rect x="40" y="36" width="16" height="3" fill="#C7844D"/>
+              <rect x="42" y="42" width="12" height="3" fill="#C7844D"/>
+            </g>
+          </g>
+        </svg>
+        <div class="size-label">144dp</div>
+      </div>
+      <div class="size-block">
+        <svg width="72" height="72" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-b)">
+            <rect width="108" height="108" fill="#F5EFE0"/>
+            <g transform="translate(22, 26)">
+              <rect x="0" y="0" width="64" height="56" rx="5" fill="#FEFCF5" stroke="#3D3A2F" stroke-width="2.5"/>
+              <line x1="0" y1="28" x2="64" y2="28" stroke="#3D3A2F" stroke-width="2"/>
+              <line x1="32" y1="0" x2="32" y2="56" stroke="#3D3A2F" stroke-width="2"/>
+              <circle cx="16" cy="14" r="9" fill="#FFFFFF" stroke="#D4CEBF" stroke-width="0.5"/>
+              <circle cx="16" cy="14" r="3" fill="#D94444"/>
+              <rect x="38" y="6" width="20" height="16" rx="3" fill="#F4C95D"/>
+              <circle cx="10" cy="40" r="5" fill="#6BA368"/>
+              <circle cx="19" cy="44" r="4" fill="#5A8D5A"/>
+              <circle cx="25" cy="38" r="3" fill="#88B273"/>
+              <rect x="38" y="34" width="20" height="14" rx="3" fill="#A0633A"/>
+            </g>
+          </g>
+        </svg>
+        <div class="size-label">72dp</div>
+      </div>
+      <div class="size-block">
+        <svg width="32" height="32" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-b)">
+            <rect width="108" height="108" fill="#F5EFE0"/>
+            <g transform="translate(22, 26)">
+              <rect x="0" y="0" width="64" height="56" rx="5" fill="#FEFCF5" stroke="#3D3A2F" stroke-width="2.5"/>
+              <line x1="0" y1="28" x2="64" y2="28" stroke="#3D3A2F" stroke-width="2"/>
+              <line x1="32" y1="0" x2="32" y2="56" stroke="#3D3A2F" stroke-width="2"/>
+              <circle cx="16" cy="14" r="9" fill="#FFFFFF" stroke="#D4CEBF" stroke-width="0.5"/>
+              <circle cx="16" cy="14" r="3" fill="#D94444"/>
+              <rect x="38" y="6" width="20" height="16" rx="3" fill="#F4C95D"/>
+              <circle cx="10" cy="40" r="5" fill="#6BA368"/>
+              <circle cx="19" cy="44" r="4" fill="#5A8D5A"/>
+              <rect x="38" y="34" width="20" height="14" rx="3" fill="#A0633A"/>
+            </g>
+          </g>
+        </svg>
+        <div class="size-label">32dp</div>
+      </div>
+    </div>
+    <div class="mock-phone">
+      <div class="home-app">
+        <svg width="48" height="48" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-b)">
+            <rect width="108" height="108" fill="#F5EFE0"/>
+            <g transform="translate(22, 26)">
+              <rect x="0" y="0" width="64" height="56" rx="5" fill="#FEFCF5" stroke="#3D3A2F" stroke-width="2.5"/>
+              <line x1="0" y1="28" x2="64" y2="28" stroke="#3D3A2F" stroke-width="2"/>
+              <line x1="32" y1="0" x2="32" y2="56" stroke="#3D3A2F" stroke-width="2"/>
+              <circle cx="16" cy="14" r="9" fill="#FFFFFF"/>
+              <circle cx="16" cy="14" r="3" fill="#D94444"/>
+              <rect x="38" y="6" width="20" height="16" rx="3" fill="#F4C95D"/>
+              <circle cx="10" cy="40" r="5" fill="#6BA368"/>
+              <circle cx="19" cy="44" r="4" fill="#5A8D5A"/>
+              <rect x="38" y="34" width="20" height="14" rx="3" fill="#A0633A"/>
+            </g>
+          </g>
+        </svg>
+        <div class="name">AppSorter</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#4285F4"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white" font-weight="bold">G</text></svg>
+        <div class="name">Gmail</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#06C755"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white" font-weight="bold">L</text></svg>
+        <div class="name">LINE</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FF0000"/><polygon points="38,30 72,50 38,70" fill="white"/></svg>
+        <div class="name">YouTube</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ C. AI Sparkle ============ -->
+  <div class="card">
+    <h2>C. AI スパークル + タイル ✨</h2>
+    <p class="desc">Bedrock/LLM 分類を暗示。モダンなAIアプリ印象。</p>
+    <div class="sizes">
+      <div class="size-block">
+        <svg width="144" height="144" viewBox="0 0 108 108">
+          <defs>
+            <clipPath id="squircle-c"><rect width="108" height="108" rx="24"/></clipPath>
+          </defs>
+          <g clip-path="url(#squircle-c)">
+            <rect width="108" height="108" fill="#B7F1DE"/>
+            <g transform="translate(18, 34)">
+              <rect x="0" y="0" width="24" height="24" rx="5" fill="#1C6E5B"/>
+              <rect x="30" y="0" width="24" height="24" rx="5" fill="#FF7AA2"/>
+              <rect x="0" y="30" width="24" height="24" rx="5" fill="#F4C95D"/>
+              <rect x="30" y="30" width="24" height="24" rx="5" fill="#4D96FF"/>
+            </g>
+            <!-- Sparkle -->
+            <path d="M 86 30 L 90 38 L 98 40 L 90 42 L 86 50 L 82 42 L 74 40 L 82 38 Z" fill="#1C6E5B"/>
+            <circle cx="96" cy="22" r="2.5" fill="#1C6E5B"/>
+            <circle cx="76" cy="56" r="1.8" fill="#1C6E5B"/>
+          </g>
+        </svg>
+        <div class="size-label">144dp</div>
+      </div>
+      <div class="size-block">
+        <svg width="72" height="72" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-c)">
+            <rect width="108" height="108" fill="#B7F1DE"/>
+            <g transform="translate(18, 34)">
+              <rect x="0" y="0" width="24" height="24" rx="5" fill="#1C6E5B"/>
+              <rect x="30" y="0" width="24" height="24" rx="5" fill="#FF7AA2"/>
+              <rect x="0" y="30" width="24" height="24" rx="5" fill="#F4C95D"/>
+              <rect x="30" y="30" width="24" height="24" rx="5" fill="#4D96FF"/>
+            </g>
+            <path d="M 86 30 L 90 38 L 98 40 L 90 42 L 86 50 L 82 42 L 74 40 L 82 38 Z" fill="#1C6E5B"/>
+            <circle cx="96" cy="22" r="2.5" fill="#1C6E5B"/>
+            <circle cx="76" cy="56" r="1.8" fill="#1C6E5B"/>
+          </g>
+        </svg>
+        <div class="size-label">72dp</div>
+      </div>
+      <div class="size-block">
+        <svg width="32" height="32" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-c)">
+            <rect width="108" height="108" fill="#B7F1DE"/>
+            <g transform="translate(18, 34)">
+              <rect x="0" y="0" width="24" height="24" rx="5" fill="#1C6E5B"/>
+              <rect x="30" y="0" width="24" height="24" rx="5" fill="#FF7AA2"/>
+              <rect x="0" y="30" width="24" height="24" rx="5" fill="#F4C95D"/>
+              <rect x="30" y="30" width="24" height="24" rx="5" fill="#4D96FF"/>
+            </g>
+            <path d="M 86 30 L 90 38 L 98 40 L 90 42 L 86 50 L 82 42 L 74 40 L 82 38 Z" fill="#1C6E5B"/>
+          </g>
+        </svg>
+        <div class="size-label">32dp</div>
+      </div>
+    </div>
+    <div class="mock-phone">
+      <div class="home-app">
+        <svg width="48" height="48" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-c)">
+            <rect width="108" height="108" fill="#B7F1DE"/>
+            <g transform="translate(18, 34)">
+              <rect x="0" y="0" width="24" height="24" rx="5" fill="#1C6E5B"/>
+              <rect x="30" y="0" width="24" height="24" rx="5" fill="#FF7AA2"/>
+              <rect x="0" y="30" width="24" height="24" rx="5" fill="#F4C95D"/>
+              <rect x="30" y="30" width="24" height="24" rx="5" fill="#4D96FF"/>
+            </g>
+            <path d="M 86 30 L 90 38 L 98 40 L 90 42 L 86 50 L 82 42 L 74 40 L 82 38 Z" fill="#1C6E5B"/>
+          </g>
+        </svg>
+        <div class="name">AppSorter</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#4285F4"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white" font-weight="bold">G</text></svg>
+        <div class="name">Gmail</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#06C755"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white" font-weight="bold">L</text></svg>
+        <div class="name">LINE</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FF0000"/><polygon points="38,30 72,50 38,70" fill="white"/></svg>
+        <div class="name">YouTube</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ D. A Monogram ============ -->
+  <div class="card">
+    <h2>D. A モノグラム 🔤</h2>
+    <p class="desc">頭文字で強いブランディング。ミニマルでテキストラベルなしでも識別可能。</p>
+    <div class="sizes">
+      <div class="size-block">
+        <svg width="144" height="144" viewBox="0 0 108 108">
+          <defs>
+            <clipPath id="squircle-d"><rect width="108" height="108" rx="24"/></clipPath>
+          </defs>
+          <g clip-path="url(#squircle-d)">
+            <rect width="108" height="108" fill="#1C6E5B"/>
+            <text x="54" y="82" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="80"
+                  text-anchor="middle" fill="#B7F1DE" letter-spacing="-3">A</text>
+            <!-- 4隅に色のドット -->
+            <circle cx="22" cy="22" r="3" fill="#FF6B6B"/>
+            <circle cx="86" cy="22" r="3" fill="#FFD93D"/>
+            <circle cx="22" cy="86" r="3" fill="#4D96FF"/>
+            <circle cx="86" cy="86" r="3" fill="#FF7AA2"/>
+          </g>
+        </svg>
+        <div class="size-label">144dp</div>
+      </div>
+      <div class="size-block">
+        <svg width="72" height="72" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-d)">
+            <rect width="108" height="108" fill="#1C6E5B"/>
+            <text x="54" y="82" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="80"
+                  text-anchor="middle" fill="#B7F1DE" letter-spacing="-3">A</text>
+            <circle cx="22" cy="22" r="3" fill="#FF6B6B"/>
+            <circle cx="86" cy="22" r="3" fill="#FFD93D"/>
+            <circle cx="22" cy="86" r="3" fill="#4D96FF"/>
+            <circle cx="86" cy="86" r="3" fill="#FF7AA2"/>
+          </g>
+        </svg>
+        <div class="size-label">72dp</div>
+      </div>
+      <div class="size-block">
+        <svg width="32" height="32" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-d)">
+            <rect width="108" height="108" fill="#1C6E5B"/>
+            <text x="54" y="82" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="80"
+                  text-anchor="middle" fill="#B7F1DE" letter-spacing="-3">A</text>
+          </g>
+        </svg>
+        <div class="size-label">32dp</div>
+      </div>
+    </div>
+    <div class="mock-phone">
+      <div class="home-app">
+        <svg width="48" height="48" viewBox="0 0 108 108">
+          <g clip-path="url(#squircle-d)">
+            <rect width="108" height="108" fill="#1C6E5B"/>
+            <text x="54" y="82" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="80"
+                  text-anchor="middle" fill="#B7F1DE" letter-spacing="-3">A</text>
+            <circle cx="22" cy="22" r="3" fill="#FF6B6B"/>
+            <circle cx="86" cy="22" r="3" fill="#FFD93D"/>
+            <circle cx="22" cy="86" r="3" fill="#4D96FF"/>
+            <circle cx="86" cy="86" r="3" fill="#FF7AA2"/>
+          </g>
+        </svg>
+        <div class="name">AppSorter</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#4285F4"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white" font-weight="bold">G</text></svg>
+        <div class="name">Gmail</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#06C755"/><text x="50" y="65" font-size="50" text-anchor="middle" fill="white" font-weight="bold">L</text></svg>
+        <div class="name">LINE</div>
+      </div>
+      <div class="home-app placeholder">
+        <svg width="48" height="48" viewBox="0 0 100 100"><rect width="100" height="100" fill="#FF0000"/><polygon points="38,30 72,50 38,70" fill="white"/></svg>
+        <div class="name">YouTube</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
