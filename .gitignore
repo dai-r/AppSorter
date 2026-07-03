@@ -23,3 +23,6 @@ release-keystore.jks
 .env.*
 google-services.json
 credentials.json
+
+# Kotlin コンパイラのログ等（ビルド生成物）
+.kotlin/
