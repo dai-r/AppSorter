@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import random
 import time
 from datetime import datetime, timezone
 from typing import Any
@@ -24,6 +25,8 @@ MAX_BODY_BYTES = 64 * 1024  # 64KB
 RATE_LIMIT_TABLE = os.environ["RATE_LIMIT_TABLE"]
 DAILY_LIMIT = int(os.environ["DAILY_LIMIT_PER_IDENTITY"])
 MONTHLY_LIMIT = int(os.environ["MONTHLY_LIMIT_PER_IDENTITY"])
+# 全 identity 合計の日次上限。未認証 identity は GetId で量産できるので、identity 単位の上限とは別に最終防衛線を置く
+GLOBAL_DAILY_LIMIT = int(os.environ["GLOBAL_DAILY_LIMIT"])
 
 # DynamoDB TTL margins
 DAILY_TTL_SECONDS = 2 * 24 * 3600       # daily レコードは2日で消す
@@ -111,10 +114,19 @@ def _get_identity_id(event: dict[str, Any]) -> str | None:
 
 
 def _consume_quota(identity_id: str) -> tuple[bool, str]:
-    """Kill switch確認 + Daily + Monthly カウンタを単一トランザクションで原子的に処理。
+    """Kill switch確認 + Daily + Monthly + 全体Daily カウンタを単一トランザクションで原子的に処理。
     どれか1つでも条件違反なら全て巻き戻り False を返す。
-    scope: "killswitch" / "daily" / "monthly" / "" (成功)
+    全体カウンタは全リクエストが同じ項目を更新するため、同時リクエスト同士の衝突（TransactionConflict）は1回だけやり直す。
+    scope: "killswitch" / "daily" / "monthly" / "global" / "conflict" / "" (成功)
     """
+    allowed, scope = _try_consume_quota(identity_id)
+    if scope == "conflict":
+        time.sleep(random.uniform(0.05, 0.2))
+        allowed, scope = _try_consume_quota(identity_id)
+    return allowed, scope
+
+
+def _try_consume_quota(identity_id: str) -> tuple[bool, str]:
     now = datetime.now(timezone.utc)
     day_key = now.strftime("DAY#%Y-%m-%d")
     month_key = now.strftime("MON#%Y-%m")
@@ -174,6 +186,24 @@ def _consume_quota(identity_id: str) -> tuple[bool, str]:
                         },
                     }
                 },
+                # [3] 全体の日次カウンタ（identity をまたいだ合計）
+                {
+                    "Update": {
+                        "TableName": RATE_LIMIT_TABLE,
+                        "Key": {
+                            "pk": {"S": "GLOBAL"},
+                            "sk": {"S": day_key},
+                        },
+                        "UpdateExpression": "ADD #c :one SET #t = if_not_exists(#t, :ttl)",
+                        "ConditionExpression": "attribute_not_exists(#c) OR #c < :limit",
+                        "ExpressionAttributeNames": {"#c": "count", "#t": "ttl"},
+                        "ExpressionAttributeValues": {
+                            ":one": {"N": "1"},
+                            ":limit": {"N": str(GLOBAL_DAILY_LIMIT)},
+                            ":ttl": {"N": str(ttl_day)},
+                        },
+                    }
+                },
             ]
         )
         return True, ""
@@ -189,6 +219,10 @@ def _consume_quota(identity_id: str) -> tuple[bool, str]:
                 return False, "daily"
             if len(codes) >= 3 and codes[2] == "ConditionalCheckFailed":
                 return False, "monthly"
+            if len(codes) >= 4 and codes[3] == "ConditionalCheckFailed":
+                return False, "global"
+            if "TransactionConflict" in codes:
+                return False, "conflict"
             return False, "unknown"
         logger.exception("ddb transact_write_items failed")
         raise
@@ -235,12 +269,16 @@ def lambda_handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
                 "error": "service temporarily disabled",
                 "reason": "budget limit reached",
             })
+        if scope in ("conflict", "unknown"):
+            # 衝突が解けない・DynamoDB 側のスロットリング等。レート制限ではないので 429 にしない
+            return _resp(503, {"error": "busy, retry later", "reason": scope})
         return _resp(429, {
             "error": "rate limit exceeded",
             "scope": scope,
             "limits": {
                 "daily": DAILY_LIMIT,
                 "monthly": MONTHLY_LIMIT,
+                "global_daily": GLOBAL_DAILY_LIMIT,
             },
         })
 

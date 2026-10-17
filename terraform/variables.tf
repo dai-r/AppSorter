@@ -80,6 +80,12 @@ variable "monthly_limit_per_identity" {
   description = "1 Cognito identity あたりの1ヶ月のAPI呼び出し上限"
 }
 
+variable "global_daily_limit" {
+  type        = number
+  default     = 30
+  description = "全 identity 合計の1日のAPI呼び出し上限（UTC日付）。未認証 identity は量産できるため identity 単位とは別の最終防衛線。1回あたり最大約$0.013なので30回/日で月$12程度"
+}
+
 variable "manage_apigw_account" {
   type        = bool
   default     = true

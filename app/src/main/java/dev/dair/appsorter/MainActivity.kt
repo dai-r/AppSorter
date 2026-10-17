@@ -22,7 +22,10 @@ import dev.dair.appsorter.categorizer.AppCategorizer
 import dev.dair.appsorter.categorizer.BedrockAppCategorizer
 import dev.dair.appsorter.categorizer.CategorizationEngine
 import dev.dair.appsorter.categorizer.CategorizerBackend
+import dev.dair.appsorter.categorizer.CognitoCredentialsProvider
 import dev.dair.appsorter.categorizer.RuleBasedAppCategorizer
+import dev.dair.appsorter.categorizer.SdkCognitoApi
+import dev.dair.appsorter.categorizer.SharedPrefsIdentityIdStore
 import dev.dair.appsorter.data.AppCategoryRepository
 import dev.dair.appsorter.data.AppSorterDatabase
 import dev.dair.appsorter.databinding.ActivityMainBinding
@@ -337,7 +340,11 @@ class MainActivity : AppCompatActivity() {
             CategorizerBackend.CLAUDE_API to BedrockAppCategorizer(
                 apiUrl = apiUrl,
                 region = region,
-                identityPoolId = poolId,
+                credentials = CognitoCredentialsProvider(
+                    identityPoolId = poolId,
+                    api = SdkCognitoApi(region),
+                    store = SharedPrefsIdentityIdStore(this),
+                ),
             ).withFallback(RuleBasedAppCategorizer())
         } else {
             CategorizerBackend.OFFLINE_RULES to RuleBasedAppCategorizer()

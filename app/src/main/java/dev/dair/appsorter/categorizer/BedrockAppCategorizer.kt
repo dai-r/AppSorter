@@ -1,13 +1,8 @@
 package dev.dair.appsorter.categorizer
 
-import aws.sdk.kotlin.services.cognitoidentity.CognitoIdentityClient
-import aws.sdk.kotlin.services.cognitoidentity.model.GetCredentialsForIdentityRequest
-import aws.sdk.kotlin.services.cognitoidentity.model.GetIdRequest
 import dev.dair.appsorter.model.CategorizedApp
 import dev.dair.appsorter.model.InstalledApp
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -18,10 +13,10 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.util.concurrent.TimeUnit
 
-class BedrockAppCategorizer(
+internal class BedrockAppCategorizer(
     private val apiUrl: String,
-    private val region: String,
-    private val identityPoolId: String,
+    region: String,
+    private val credentials: CognitoCredentialsProvider,
 ) : AppCategorizer {
 
     class RateLimitException(val scope: String) : RuntimeException("rate limit exceeded: $scope")
@@ -36,18 +31,10 @@ class BedrockAppCategorizer(
 
     private val signer = SigV4Signer(region = region, service = "execute-api")
 
-    private val credentialMutex = Mutex()
-    private var cachedCredentials: CachedCredentials? = null
-
-    private data class CachedCredentials(
-        val creds: SigV4Signer.Credentials,
-        val expirationEpochSec: Long,
-    )
-
     override suspend fun categorize(batch: List<InstalledApp>): List<CategorizedApp> {
         if (batch.isEmpty()) return emptyList()
 
-        val creds = getValidCredentials()
+        val creds = credentials.get()
         val payload = json.encodeToString(
             CategorizeRequest.serializer(),
             CategorizeRequest(apps = batch.map { ApiApp(it.appName, it.packageName) })
@@ -75,7 +62,14 @@ class BedrockAppCategorizer(
                     }.getOrNull() ?: "unknown"
                     throw RateLimitException(scope)
                 }
-                503 -> throw KillSwitchException()
+                503 -> {
+                    // 503 は予算停止（kill switch）と一時的な混雑の2種類。reason で区別する
+                    val reason = runCatching {
+                        json.decodeFromString(ErrorBody.serializer(), bodyText).reason
+                    }.getOrNull()
+                    if (reason == "budget limit reached") throw KillSwitchException()
+                    throw RuntimeException("API busy: ${reason ?: "unknown"}")
+                }
                 else -> throw RuntimeException("API ${resp.code}: ${bodyText.take(300)}")
             }
         }
@@ -97,32 +91,6 @@ class BedrockAppCategorizer(
         }
     }
 
-    private suspend fun getValidCredentials(): SigV4Signer.Credentials = credentialMutex.withLock {
-        val now = System.currentTimeMillis() / 1000
-        val cached = cachedCredentials
-        if (cached != null && cached.expirationEpochSec - now > 60) {
-            return@withLock cached.creds
-        }
-
-        CognitoIdentityClient { region = this@BedrockAppCategorizer.region }.use { client ->
-            val getIdResp = client.getId(GetIdRequest { identityPoolId = this@BedrockAppCategorizer.identityPoolId })
-            val identityId = getIdResp.identityId ?: error("getId returned null identityId")
-
-            val credResp = client.getCredentialsForIdentity(
-                GetCredentialsForIdentityRequest { this.identityId = identityId }
-            )
-            val c = credResp.credentials ?: error("getCredentialsForIdentity returned null")
-            val creds = SigV4Signer.Credentials(
-                accessKeyId = c.accessKeyId ?: error("missing accessKeyId"),
-                secretAccessKey = c.secretKey ?: error("missing secretKey"),
-                sessionToken = c.sessionToken,
-            )
-            val expiration = c.expiration?.epochSeconds ?: (now + 3600)
-            cachedCredentials = CachedCredentials(creds, expiration)
-            creds
-        }
-    }
-
     @Serializable
     private data class CategorizeRequest(val apps: List<ApiApp>)
 
@@ -139,6 +107,9 @@ class BedrockAppCategorizer(
         val category: String = "Other",
         val source: String = "bedrock",
     )
+
+    @Serializable
+    private data class ErrorBody(val error: String = "", val reason: String? = null)
 
     @Serializable
     private data class RateLimitBody(val error: String = "", val scope: String = "unknown")

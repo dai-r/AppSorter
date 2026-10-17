@@ -10,6 +10,9 @@ max_apps_per_request = 50
 daily_limit_per_identity   = 10
 monthly_limit_per_identity = 100
 
+# 全 identity 合計の1日の上限（使い切ると UTC 0時＝日本時間9時まで全員ルール分類に落ちる）
+global_daily_limit = 30
+
 # 月額コスト上限（USD）。100%超でDynamoDB kill switch発火
 budget_limit_usd   = 10
 notification_email = "your-email@example.com"

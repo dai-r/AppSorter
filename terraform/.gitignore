@@ -16,3 +16,4 @@ backend.hcl
 
 # アーカイブビルド中間生成物
 build/
+__pycache__/

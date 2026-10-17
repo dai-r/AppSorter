@@ -93,6 +93,7 @@ resource "aws_lambda_function" "categorizer" {
       RATE_LIMIT_TABLE           = aws_dynamodb_table.rate_limit.name
       DAILY_LIMIT_PER_IDENTITY   = tostring(var.daily_limit_per_identity)
       MONTHLY_LIMIT_PER_IDENTITY = tostring(var.monthly_limit_per_identity)
+      GLOBAL_DAILY_LIMIT         = tostring(var.global_daily_limit)
       LOG_LEVEL                  = "INFO"
     }
   }
