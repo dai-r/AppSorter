@@ -27,3 +27,6 @@ credentials.json
 # Kotlin コンパイラのログ等（ビルド生成物）
 .kotlin/
 docs/改善案.md
+
+# draw.io の一時ファイル
+*.dtmp
