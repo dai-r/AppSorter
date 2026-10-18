@@ -5,6 +5,12 @@
 > **試験的なプロジェクトです。** 個人の実験として作っているもので、無保証です。仕様は予告なく変わり、開発が止まることもあります。
 > AI による分類は間違えることがあります。
 
+| カテゴリ一覧 | タブ表示 | 分類の変更 | ホーム画面ウィジェット |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/01_cards.png" width="200" alt="カテゴリ一覧"> | <img src="docs/screenshots/02_tabs.png" width="200" alt="タブ表示"> | <img src="docs/screenshots/03_change_category.png" width="200" alt="分類の変更"> | <img src="docs/screenshots/04_widget.png" width="200" alt="ホーム画面ウィジェット"> |
+
+<sub>エミュレータ（Android 16）の標準アプリを、クラウド分類で振り分けた画面です。</sub>
+
 ## できること
 
 - ランチャーに表示されるアプリを一覧し、カテゴリに分類する
