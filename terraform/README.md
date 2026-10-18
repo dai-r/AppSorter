@@ -22,6 +22,18 @@ EventBridge (月初 UTC 00:00)
 
 リージョンは **東京 (ap-northeast-1)** 前提。WAFv2 は少人数利用ではコスト過剰なため外してある（ユーザーが増えたら戻す想定）。
 
+### ディレクトリ構成
+
+```
+terraform/
+  modules/appsorter/   … リソース定義（API Gateway / Lambda / Cognito / DynamoDB / Budget）と Lambda ソース・テスト
+  envs/prod/           … 本番環境の root module。backend・provider・環境ごとの値を持ち、modules/appsorter を呼ぶだけ
+```
+
+- `terraform` コマンドは **`envs/<環境>/` で実行** する。環境を増やすときは `envs/prod` を複製し、`providers.tf` の backend `key` を変える（state を環境ごとに分ける）。
+- 自分の Terraform から取り込む場合は `source = "github.com/dai-r/AppSorter//terraform/modules/appsorter?ref=<tag>"` で呼べる（backend・provider は呼び出し側で設定）。
+- `envs/prod/moved.tf` は旧構成（`terraform/` 直下にリソースを直書き）の state を module 配下へ付け替えるためのもの。旧構成から移行する環境では、apply 前の plan が「0 to add, 0 to destroy」で各リソースが `has moved to module.appsorter...` と表示されることを確認する。
+
 ### なぜこの形か
 
 - **APK に長期シークレット埋め込み回避**: Cognito Identity Pool から都度短期資格情報を取得し SigV4 署名させる。キーが流出しても数時間で失効する。
@@ -48,7 +60,7 @@ EventBridge (月初 UTC 00:00)
 ### 初回セットアップ（必須）
 
 ```bash
-cd AppSorter/terraform
+cd AppSorter/terraform/envs/prod
 
 # 1. backend.hcl: tfstate保存先S3バケット名（アカウントIDを含むためコードに残さない）
 cp backend.hcl.example backend.hcl
@@ -94,6 +106,7 @@ backend 設定を変えた時は `-reconfigure` か `-migrate-state` を `init` 
 ## 破棄
 
 ```bash
+cd AppSorter/terraform/envs/prod
 terraform destroy
 ```
 
@@ -101,7 +114,7 @@ WAF はアカウント数に応じた課金があるため、検証後は破棄�
 
 ## Git に入れないもの
 
-`.gitignore` で tfstate、tfvars、.terraform/ を除外済み。tfstate は本番では S3 バックエンド（`providers.tf` のコメント参照）に移すこと。
+`.gitignore` で tfstate、tfvars、.terraform/ を除外済み。tfstate は本番では S3 バックエンド（`envs/prod/providers.tf` のコメント参照）に移すこと。
 
 ## レート制限の挙動
 

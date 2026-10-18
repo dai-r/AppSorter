@@ -1,0 +1,2 @@
+# Lambda ソースは zip のハッシュがデプロイ差分になるため、OS を問わず LF に固定する
+terraform/modules/*/lambda/** text eol=lf

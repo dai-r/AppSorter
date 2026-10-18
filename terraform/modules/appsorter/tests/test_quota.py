@@ -1,7 +1,7 @@
 """handler._consume_quota のテスト。
 
 lambda/ は丸ごと zip されるので、テストはその外に置く（__pycache__ を zip に入れないため）。
-実行: cd terraform && uvx --with boto3 pytest -p no:cacheprovider tests
+実行: cd terraform/modules/appsorter && uvx --with boto3 pytest -p no:cacheprovider tests
 """
 import json
 import os

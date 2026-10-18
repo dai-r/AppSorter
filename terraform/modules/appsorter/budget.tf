@@ -121,7 +121,7 @@ resource "aws_iam_role_policy" "killswitch_ddb" {
 data "archive_file" "killswitch_zip" {
   type        = "zip"
   source_file = "${path.module}/lambda/killswitch.py"
-  output_path = "${path.module}/build/killswitch.zip"
+  output_path = "${path.root}/build/killswitch.zip"
 }
 
 resource "aws_lambda_function" "killswitch" {

@@ -54,7 +54,7 @@ resource "aws_iam_role_policy" "reset_ddb" {
 data "archive_file" "reset_zip" {
   type        = "zip"
   source_file = "${path.module}/lambda/reset.py"
-  output_path = "${path.module}/build/reset.zip"
+  output_path = "${path.root}/build/reset.zip"
 }
 
 resource "aws_lambda_function" "reset" {
