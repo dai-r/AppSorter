@@ -32,7 +32,7 @@ terraform/
 
 - `terraform` コマンドは **`envs/<環境>/` で実行** する。環境を増やすときは `envs/prod` を複製し、`providers.tf` の backend `key` を変える（state を環境ごとに分ける）。
 - 自分の Terraform から取り込む場合は `source = "github.com/dai-r/AppSorter//terraform/modules/appsorter?ref=<tag>"` で呼べる（backend・provider は呼び出し側で設定）。
-- `envs/prod/moved.tf` は旧構成（`terraform/` 直下にリソースを直書き）の state を module 配下へ付け替えるためのもの。旧構成から移行する環境では、apply 前の plan が「0 to add, 0 to destroy」で各リソースが `has moved to module.appsorter...` と表示されることを確認する。
+- 旧構成（`terraform/` 直下にリソースを直書き）で apply 済みの state がある場合は、そのまま plan すると全リソースが作り直しになる。commit `7a874f5` の `envs/prod/moved.tf` を戻してから plan し、「0 to add, 0 to destroy」で各リソースが `has moved to module.appsorter...` と表示されることを確認して apply する。
 
 ### なぜこの形か
 
