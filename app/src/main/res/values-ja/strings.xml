@@ -14,6 +14,12 @@
     <string name="status_no_apps">ランチャーに表示されるアプリが見つかりませんでした。</string>
     <string name="status_batch_progress">バッチ %1$d を処理中、%3$d / %2$d 件完了。</string>
     <string name="status_done">%1$d 件のアプリを %2$s で分類しました。</string>
+    <string name="status_done_fallback_all">%1$d 件のアプリを %2$s で分類しました（%3$s）。</string>
+    <string name="status_done_fallback_partial">%1$d 件のアプリを分類しました。うち %2$d 件は %3$s で分類しています（%4$s）。</string>
+    <string name="fallback_reason_daily">クラウド分類は本日の上限に達しました</string>
+    <string name="fallback_reason_monthly">クラウド分類は今月の上限に達しました</string>
+    <string name="fallback_reason_stopped">クラウド分類は現在停止中です</string>
+    <string name="fallback_reason_error">クラウドに接続できませんでした</string>
     <string name="summary_title">カテゴリ別サマリー</string>
     <string name="apps_title">分類済みアプリ</string>
     <string name="apps_all_title">すべてのアプリ</string>

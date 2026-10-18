@@ -23,6 +23,7 @@ import dev.dair.appsorter.categorizer.BedrockAppCategorizer
 import dev.dair.appsorter.categorizer.CategorizationEngine
 import dev.dair.appsorter.categorizer.CategorizerBackend
 import dev.dair.appsorter.categorizer.CognitoCredentialsProvider
+import dev.dair.appsorter.categorizer.FallbackAppCategorizer
 import dev.dair.appsorter.categorizer.RuleBasedAppCategorizer
 import dev.dair.appsorter.categorizer.SdkCognitoApi
 import dev.dair.appsorter.categorizer.SharedPrefsIdentityIdStore
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var repository: AppCategoryRepository
     private lateinit var engine: CategorizationEngine
+    // クラウド分類が失敗した時の切替を記録する。オフライン構成では null
+    private var fallbackCategorizer: FallbackAppCategorizer? = null
     private lateinit var pagerAdapter: CategoryPagerAdapter
     private lateinit var tabMediator: TabLayoutMediator
     private lateinit var categoryAdapter: CategoryGridAdapter
@@ -271,6 +274,7 @@ class MainActivity : AppCompatActivity() {
                     return@launch
                 }
 
+                fallbackCategorizer?.reset()
                 binding.progressScan.max = installedApps.size
                 val categorized = engine.categorizeInBatches(
                     apps = installedApps,
@@ -289,11 +293,7 @@ class MainActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.IO) { repository.saveApps(categorized) }
                 renderApps(categorized)
-                binding.txtStatus.text = getString(
-                    R.string.status_done,
-                    categorized.size,
-                    backendDisplay()
-                )
+                binding.txtStatus.text = doneMessage(categorized.size)
                 CategoryWidgetProvider.updateAll(this@MainActivity)
             } finally {
                 binding.btnScan.isEnabled = true
@@ -331,35 +331,57 @@ class MainActivity : AppCompatActivity() {
         CategorizerBackend.LOCAL_LLM -> getString(R.string.backend_local_llm)
     }
 
+    /** 実際に使ったバックエンドで完了メッセージを組み立てる（フォールバック時はその旨と理由を出す） */
+    private fun doneMessage(total: Int): String {
+        val fb = fallbackCategorizer
+        val fallbackCount = fb?.fallbackCount ?: 0
+        if (fb == null || fallbackCount == 0) {
+            return getString(R.string.status_done, total, backendDisplay())
+        }
+        val reason = getString(
+            when (fb.lastReason) {
+                FallbackAppCategorizer.Reason.DAILY_LIMIT -> R.string.fallback_reason_daily
+                FallbackAppCategorizer.Reason.MONTHLY_LIMIT -> R.string.fallback_reason_monthly
+                FallbackAppCategorizer.Reason.SERVICE_STOPPED -> R.string.fallback_reason_stopped
+                FallbackAppCategorizer.Reason.ERROR, null -> R.string.fallback_reason_error
+            }
+        )
+        return if (fallbackCount >= total) {
+            getString(R.string.status_done_fallback_all, total, getString(R.string.backend_offline_rules), reason)
+        } else {
+            getString(R.string.status_done_fallback_partial, total, fallbackCount, getString(R.string.backend_offline_rules), reason)
+        }
+    }
+
     private fun buildEngine(): CategorizationEngine {
         val apiUrl = BuildConfig.APPSORTER_API_URL
         val poolId = BuildConfig.APPSORTER_COGNITO_IDENTITY_POOL_ID
         val region = BuildConfig.APPSORTER_AWS_REGION
 
         val (backend, categorizer) = if (apiUrl.isNotBlank() && poolId.isNotBlank()) {
-            CategorizerBackend.CLAUDE_API to BedrockAppCategorizer(
-                apiUrl = apiUrl,
-                region = region,
-                credentials = CognitoCredentialsProvider(
-                    identityPoolId = poolId,
-                    api = SdkCognitoApi(region),
-                    store = SharedPrefsIdentityIdStore(this),
+            val fallback = FallbackAppCategorizer(
+                primary = BedrockAppCategorizer(
+                    apiUrl = apiUrl,
+                    region = region,
+                    credentials = CognitoCredentialsProvider(
+                        identityPoolId = poolId,
+                        api = SdkCognitoApi(region),
+                        store = SharedPrefsIdentityIdStore(this),
+                    ),
                 ),
-            ).withFallback(RuleBasedAppCategorizer())
+                fallback = RuleBasedAppCategorizer(),
+                onFallback = {
+                    android.util.Log.w("AppSorter", "remote categorize failed, falling back", it)
+                },
+            )
+            fallbackCategorizer = fallback
+            CategorizerBackend.CLAUDE_API to fallback
         } else {
+            fallbackCategorizer = null
             CategorizerBackend.OFFLINE_RULES to RuleBasedAppCategorizer()
         }
         return CategorizationEngine(backend = backend, categorizer = categorizer)
     }
-
-    private fun AppCategorizer.withFallback(fallback: AppCategorizer): AppCategorizer =
-        object : AppCategorizer {
-            override suspend fun categorize(batch: List<InstalledApp>) =
-                runCatching { this@withFallback.categorize(batch) }.getOrElse {
-                    android.util.Log.w("AppSorter", "remote categorize failed, falling back", it)
-                    fallback.categorize(batch)
-                }
-        }
 
     private fun loadLaunchableApps(): List<InstalledApp> {
         val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)

@@ -14,6 +14,12 @@
     <string name="status_no_apps">No launchable apps found.</string>
     <string name="status_batch_progress">Processing batch %1$d, %3$d / %2$d apps done.</string>
     <string name="status_done">%1$d apps categorized with %2$s.</string>
+    <string name="status_done_fallback_all">%1$d apps categorized with %2$s (%3$s).</string>
+    <string name="status_done_fallback_partial">%1$d apps categorized; %2$d of them with %3$s (%4$s).</string>
+    <string name="fallback_reason_daily">cloud categorization reached today\'s limit</string>
+    <string name="fallback_reason_monthly">cloud categorization reached this month\'s limit</string>
+    <string name="fallback_reason_stopped">cloud categorization is currently paused</string>
+    <string name="fallback_reason_error">could not reach the cloud</string>
     <string name="summary_title">Category summary</string>
     <string name="apps_title">Categorized apps</string>
     <string name="apps_all_title">All apps</string>
