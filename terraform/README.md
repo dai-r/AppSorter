@@ -61,6 +61,11 @@ cp terraform.tfvars.example terraform.tfvars
 
 両ファイルとも `.gitignore` で除外されており、個人/アカウント情報が Git に入らない設計。
 
+> **注意: `manage_apigw_account`**
+> API Gateway の CloudWatch ログ用ロール（`aws_api_gateway_account`）は **AWSアカウント×リージョンに1つだけ** の共通設定。
+> 既定の `true` だと AppSorter がこのロールを作って設定する。同じアカウント・リージョンで **既に他のスタックが設定済みなら `false`** にすること（`true` のままだと上書きし合い、apply のたびに切り替わる）。
+> 設定済みかどうかは `aws apigateway get-account --query cloudwatchRoleArn` で確認できる（`None` なら未設定なので `true` のままでよい）。
+
 ### apply
 
 ```bash

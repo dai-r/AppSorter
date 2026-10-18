@@ -17,5 +17,6 @@ global_daily_limit = 30
 budget_limit_usd   = 10
 notification_email = "your-email@example.com"
 
-# 他スタックで既にAPI Gateway のアカウント共通ロールを作っているなら false
+# API Gateway の CloudWatch ログ用ロールはアカウント×リージョンに1つだけの共通設定。
+# `aws apigateway get-account --query cloudwatchRoleArn` が None 以外（他スタックで設定済み）なら false
 manage_apigw_account = true
